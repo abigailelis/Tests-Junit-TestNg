@@ -7,7 +7,8 @@ import tdv.teclasunidos.entities.Recurso;
 
 
 public class RecursoRepository {
-    private Map<String, Recurso> recursos = new HashMap<>();
+    private final Map<String, Recurso> recursos = new HashMap<>();
+
 	public Recurso buscarPorNombre(String nombreRecurso) {
 		// TODO Auto-generated method stub
 		return null;

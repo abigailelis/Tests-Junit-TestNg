@@ -1,11 +1,10 @@
 package tdv.teclasunidos.repositories;
 
 import java.util.*;
-
 import tdv.teclasunidos.entities.Socio;
 
 public class SocioRepository {
-    private Map<String, Socio> socios = new HashMap<>();
+    private final Map<String, Socio> socios = new HashMap<>();
 
     public void agregar(Socio socio) {
         socios.put(socio.getDni(), socio);
@@ -29,5 +28,6 @@ public class SocioRepository {
 
     public boolean eliminarPorDni(String dni) {
     	return ((Collection<Socio>) socios).removeIf(s -> s.getDni().equals(dni));
-}
+    }
+
 }

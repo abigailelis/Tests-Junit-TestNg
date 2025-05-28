@@ -23,7 +23,7 @@ public class Actividad {
 
     // Getters, setters y métodos auxiliares
     public boolean agregarInscripcion(Socio socio) {
-        if (socio.getEdad() <= edadMinima || inscriptos.size() > cupo) {
+        if (socio.getEdad() < edadMinima || inscriptos.size() >= cupo) {
             return false;
         }
         return inscriptos.add(socio);
@@ -34,26 +34,27 @@ public class Actividad {
     }
 
 	public String getNombre() {
-		// TODO Auto-generated method stub
 		return nombre;
 	}
 
 	public String getEncargado() {
-		// TODO Auto-generated method stub
 		return encargado;
 	}
 
 	public int getEdadMinima() {
-		// TODO Auto-generated method stub
 		return edadMinima;
 	}
 
 	public int getCupo() {
-		// TODO Auto-generated method stub
 		return cupo;
 	}
+
+    public String getLugar(){
+        return lugar;
+    }
+
 	public String toString() {
-		return nombre+"*"+lugar;
+		return nombre+"-"+lugar;
 	}
 }
 

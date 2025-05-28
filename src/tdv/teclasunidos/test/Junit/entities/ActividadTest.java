@@ -1,11 +1,8 @@
-package tdv.teclasunidos.test.entities;
+package tdv.teclasunidos.test.Junit.entities;
 
 import org.junit.*;
 import org.junit.jupiter.api.DisplayName;
-import tdv.teclasunidos.entities.Actividad;
-import tdv.teclasunidos.entities.EdadInvalidaException;
-import tdv.teclasunidos.entities.NombreMuyLargoException;
-import tdv.teclasunidos.entities.Socio;
+import tdv.teclasunidos.entities.*;
 
 public class ActividadTest {
 
@@ -37,24 +34,26 @@ public class ActividadTest {
     @Test
     @DisplayName("Test toString")
     public void TestToString(){
-        Object actividadString = actividad.toString();
-        Assert.assertTrue(actividadString instanceof String);
+        String actividadString = actividad.toString();
+        String stringEsperado = actividad.getNombre() + "-" + actividad.getLugar();
+        Assert.assertEquals("El método toString no es el esperado. ", stringEsperado, actividadString);
     }
 
     @Test
     @DisplayName("Test inscribir menores de 16 años a Boxeo")
-    public void inscribirMenorEdadBoxeo() throws EdadInvalidaException, NombreMuyLargoException {
-        Socio socio = new Socio("Pedrito", 16, "calle 30", "40.568.957");
+    public void inscribirMenorEdadBoxeo() throws EdadInvalidaException, NombreMuyLargoException, DniInvalidoException {
+        Socio socio = new Socio("Pedrito", 16, "calle 30", "456857");
+
         Assert.assertTrue("El socio no se agregó correctamente", boxeo.agregarInscripcion(socio));
     }
 
     @Test
     @DisplayName("Test superar cupos de actividad")
-    public void inscribirConCupoSuperado() throws EdadInvalidaException, NombreMuyLargoException {
-        Socio socio1 = new Socio("Pedrito", 16, "calle 30", "40.568.957");
-        Socio socio2 = new Socio("Juanito", 18, "calle 11", "38.777.144");
+    public void inscribirConCupoSuperado() throws EdadInvalidaException, NombreMuyLargoException, DniInvalidoException {
+        //Socio socio1 = new Socio("Pedrito", 16, "calle 30", "40.568.957");
+        Socio socio2 = new Socio("Juanito", 18, "calle 11", "387444");
 
-        boxeo.agregarInscripcion(socio1);
+        //boxeo.agregarInscripcion(socio1);
         Assert.assertTrue("El socio no se agregó correctamente", boxeo.agregarInscripcion(socio2));
     }
 

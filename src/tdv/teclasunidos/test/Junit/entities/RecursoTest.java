@@ -1,7 +1,8 @@
-package tdv.teclasunidos.test.entities;
+package tdv.teclasunidos.test.Junit.entities;
 
 import org.junit.*;
 import org.junit.jupiter.api.DisplayName;
+import tdv.teclasunidos.entities.NombreRecursoNoPermitido;
 import tdv.teclasunidos.entities.Recurso;
 
 public class RecursoTest {
@@ -28,8 +29,14 @@ public class RecursoTest {
 
     @Test
     @DisplayName("Test recurso Oficina")
-    public void TestVerificarNombreAceptado() throws IllegalArgumentException{
-        //new Recurso("Oficina", "Necochea");
-        new Recurso("Sede", "Necochea");
+    public void TestVerificarNombreNoPermitido(){
+        Recurso recurso = null;
+        try {
+            recurso = new Recurso("Oficina", "Necochea");
+        } catch (NombreRecursoNoPermitido e) {
+            throw new RuntimeException(e);
+        }
+
+        Assert.assertNotNull("El recurso con el nombre Oficina no se puede crear", recurso);
     }
 }

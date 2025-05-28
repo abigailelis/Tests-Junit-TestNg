@@ -35,5 +35,6 @@ public class ReservaService {
     public List<Reserva> listarReservas(String nombreRecurso) {
         return reservasPorRecurso.getOrDefault(nombreRecurso, new ArrayList<>());
     }
+
 }
 

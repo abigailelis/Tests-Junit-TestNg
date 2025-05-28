@@ -1,7 +1,8 @@
-package tdv.teclasunidos.test.repositories;
+package tdv.teclasunidos.test.Junit.repositories;
 
 import org.junit.*;
 import org.junit.jupiter.api.DisplayName;
+import tdv.teclasunidos.entities.DniInvalidoException;
 import tdv.teclasunidos.entities.EdadInvalidaException;
 import tdv.teclasunidos.entities.NombreMuyLargoException;
 import tdv.teclasunidos.entities.Socio;
@@ -9,13 +10,13 @@ import tdv.teclasunidos.repositories.SocioRepository;
 
 public class SocioRepositoryTest {
 
-    static SocioRepository socioRepository = new SocioRepository();;
+    static SocioRepository socioRepository = new SocioRepository();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception{
         System.out.println("SocioRepository -> BeforeClass : setUpBeforeClass");
-        Socio socio1 = new Socio ("Juan", 25, "calle 25", "12.456.789");
-        Socio socio2 = new Socio("Pedro", 18, "calle 30", "12.567.389");
+        Socio socio1 = new Socio ("Juan", 25, "calle 25", "1245678");
+        Socio socio2 = new Socio("Pedro", 18, "calle 30", "125673");
 
         socioRepository.agregar(socio1);
         socioRepository.agregar(socio2);
@@ -33,29 +34,33 @@ public class SocioRepositoryTest {
 
     @Test
     @DisplayName("Agregar socio")
-    public void TestAgregar () throws EdadInvalidaException, NombreMuyLargoException {
-        int cantSociosInicial = getCantidadDeSocios();
-        agregarSocio();
-        int cantSociosFinal = getCantidadDeSocios();
+    public void TestAgregar () throws EdadInvalidaException, NombreMuyLargoException, DniInvalidoException {
+        //Verificar que el socio que se agregó sea el mismo
+        Socio socio = agregarSocio();
+        Socio socioObtenido = socioRepository.buscarPorDni( socio.getDni() );
 
-        Assert.assertEquals("El socio no se agregó correctamente ", cantSociosInicial + 1, cantSociosFinal);
+        Assert.assertEquals("El socio no se agregó correctamente ", socio, socioObtenido);
     }
 
     @Test
     @DisplayName("Eliminar socio")
-    public void TestEliminar() throws EdadInvalidaException, NombreMuyLargoException {
-        agregarSocio();
-        int cantSociosInicial = getCantidadDeSocios();
-        socioRepository.eliminar("12.345.789");
-        int cantSociosFinal = getCantidadDeSocios();
+    public void TestEliminar() throws EdadInvalidaException, NombreMuyLargoException, DniInvalidoException {
+        Socio socio = agregarSocio();
+        //Verifico que se agregó
+        Socio socioObtenido = socioRepository.buscarPorDni(socio.getDni());
+        System.out.println(socioObtenido);
 
-         Assert.assertEquals("El socio no se eliminó correctamente", cantSociosInicial - 1, cantSociosFinal);
+        socioRepository.eliminar(socio.getDni());
+
+       socioObtenido = socioRepository.buscarPorDni(socio.getDni());
+
+       Assert.assertNull("El socio no se eliminó correctamente", socioObtenido);
 
     }
 
     @Test
     @DisplayName("Actualizar socio")
-    public void TestActualizar() throws EdadInvalidaException, NombreMuyLargoException {
+    public void TestActualizar() throws EdadInvalidaException, NombreMuyLargoException, DniInvalidoException {
         //Agrego un socio
         Socio socio = agregarSocio();
 
@@ -64,7 +69,7 @@ public class SocioRepositoryTest {
         socioRepository.actualizar(socio);
 
         //Obtengo el socio editado del repository
-        Socio socioActual = socioRepository.buscarPorDni("12.345.789");
+        Socio socioActual = socioRepository.buscarPorDni( socio.getDni() );
 
         Assert.assertEquals("El socio no se actualizó correctamente", socio, socioActual);
     }
@@ -72,44 +77,27 @@ public class SocioRepositoryTest {
     @Test
     @DisplayName("Verificar nombre muy largo")
     public void TestNombreMuyLargo() throws EdadInvalidaException, NombreMuyLargoException {
-        Socio socio = agregarSocio();
-        socio.setNombre("AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDDEEEEEEEEEE");
+        String nombre = "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDDEEEEEEEEEEF";
+
+        //Verifica que realmente se largue la exception del constructor de Socio
+        Assert.assertThrows ( NombreMuyLargoException.class, () -> new Socio(nombre, 28, "Calle Bourdeu", "1234567") );
     }
 
     @Test
     @DisplayName("Verificar dni")
-    public void TestDniValido() throws EdadInvalidaException, NombreMuyLargoException {
-        //String dniSinPuntos = "123456789";
-        //String dniCorto = "1.123.456";
-        String dniValido = "12.345.789";
-        Socio socio = new Socio("Pepe", 28, "Calle 74", dniValido);
+    public void TestDniValido() {
+        String dniSinPuntos = "123456";
+        String dniInvalido = "12.345.789";
 
-        Assert.assertTrue("El dni del socio no es válido", verificarDniValido ( socio.getDni() ) );
-    }
-
-    //Función auxiliar para obtener la cantidad de socios
-    public int getCantidadDeSocios(){
-        return socioRepository.listar().size();
+        //Verifica que se lance la exception del constructor de Socio
+        Assert.assertThrows ( DniInvalidoException.class, () -> new Socio("Pepe", 28, "Calle Bourdeu", dniInvalido) );
     }
 
     //Función auxiliar para agregar un socio
-    public Socio agregarSocio() throws EdadInvalidaException, NombreMuyLargoException {
-        Socio socio = new Socio("Pepe", 28, "Calle Bourdeu", "12.345.789");
+    public Socio agregarSocio() throws EdadInvalidaException, NombreMuyLargoException, DniInvalidoException {
+        Socio socio =  new Socio("Pepe", 28, "Calle Bourdeu", "1234567");
         socioRepository.agregar(socio);
+
         return socio;
     }
-
-    //Funcion auxiliar para verificar un dni
-    public boolean verificarDniValido(String dni){
-        // Eliminar los puntos para verificar solo los números
-        String dniSinPuntos = dni.replace(".", "");
-
-        // Verificar si tiene exactamente 8 números
-        if (!dniSinPuntos.matches("\\d{8}"))
-            return false;
-
-        // Verificar si los puntos están en los lugares correctos (ej. 12.345.678)
-        return dni.matches("\\d{2}\\.\\d{3}\\.\\d{3}");
-    }
-
 }

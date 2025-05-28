@@ -23,4 +23,12 @@ public class Reserva {
     public Socio getSocio() { return socio; }
     public LocalDateTime getInicio() { return inicio; }
     public LocalDateTime getFin() { return fin; }
+
+    @Override
+    public String toString(){
+        return "Recurso: " + recurso +
+                " -> Inicio: " + inicio +
+                " - Fin: " + fin +
+                "\nSocio: " + socio.toString();
+    }
 }

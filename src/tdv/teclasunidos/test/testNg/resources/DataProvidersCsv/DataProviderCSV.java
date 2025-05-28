@@ -1,4 +1,4 @@
-package tdv.teclasunidos.test.testNg.resources.csv;
+package tdv.teclasunidos.test.testNg.resources.DataProvidersCsv;
 
 import org.testng.annotations.DataProvider;
 import java.io.BufferedReader;
@@ -9,35 +9,46 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class DataProviderCSV {
+public abstract class DataProviderCSV {
 
+    private final String csvFile;
 
-    private static List<Object[]> leerSociosDesdeCSV() throws IOException {
-        List<Object[]> socios = new ArrayList<>();
-        String csvFile = "src/tdv/teclasunidos/test/testNg/resources/csv/socios.csv";
+    public DataProviderCSV( String csvFile){
+        this.csvFile = csvFile;
+    }
+
+    protected List<String[]> leerDatosDesdeCSV() throws IOException {
+        List<String[]> datos = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
-            br.readLine(); // Saltar la primera línea (encabezados)
+            br.readLine(); // Saltar encabezados
 
             while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                socios.add(new Object[]{data[0], Integer.parseInt(data[1]), data[2], data[3]});
+                datos.add(line.split(",")); // Retorna los datos sin modificar
             }
         }
-        return socios;
+        return datos;
     }
 
-    @DataProvider(name = "generadorSocios")
-    public static Iterator<Object[]> readCSV() throws IOException {
-        return leerSociosDesdeCSV().iterator();
+    @DataProvider(name = "generadorDatos")
+    public Iterator<Object[]> getSocios() throws IOException {
+        List<Object[]> datosProcesados = parsearDatosCsv();
+
+        return datosProcesados.iterator();
     }
 
-    @DataProvider(name = "generadorSocioRandom")
-    public Object[][] generarSocioRandom() throws IOException {
-        List<Object[]> socios = leerSociosDesdeCSV();
-        Collections.shuffle(socios);
-        return new Object[][]{socios.getFirst()}; // Retorna solo un socio aleatorio
+    @DataProvider(name = "generadorElementoRandom")
+    public Object[][] generarElementoRandom() throws IOException {
+        List<Object[]> datosProcesados = parsearDatosCsv();
+
+        Collections.shuffle(datosProcesados);
+        return new Object[][]{datosProcesados.getFirst()}; // Retorna un socio aleatorio
     }
+
+    protected abstract List<Object[]> parsearDatosCsv() throws IOException;
+
+
+
 }
 
 

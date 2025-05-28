@@ -1,16 +1,15 @@
-package tdv.teclasunidos.test.entities;
+package tdv.teclasunidos.test.Junit.entities;
 
 import org.junit.*;
 import org.junit.jupiter.api.DisplayName;
-import tdv.teclasunidos.entities.Recurso;
-import tdv.teclasunidos.entities.Reserva;
-import tdv.teclasunidos.entities.Socio;
+import tdv.teclasunidos.entities.*;
+import tdv.teclasunidos.services.ReservaService;
 import java.time.LocalDateTime;
 
 public class ReservaTest {
 
-    static Reserva reserva;
-    static Recurso recursoOcupado;
+    static ReservaService reservaService;
+    static Recurso recurso;
     static Socio socio;
     static LocalDateTime fechaHoraInicio;
     static LocalDateTime fechaHoraFin;
@@ -19,11 +18,13 @@ public class ReservaTest {
     public static void setUpBeforeClass() throws Exception{
         System.out.println("ReservaTest BeforeClass: setUpBeforeClass");
 
-        recursoOcupado = new Recurso("Pileta", "Necochea");
-        socio = new Socio("Pepe", 28, "Calle 25", "12.345.789");
+        reservaService = new ReservaService();
+        recurso = new Recurso("Pileta", "Necochea");
+        socio = new Socio("Pepe", 28, "Calle 25", "123457");
         fechaHoraInicio = LocalDateTime.of(2025, 5, 19, 16, 30);
         fechaHoraFin = LocalDateTime.of(2025, 5, 19, 20, 30);
-        reserva = new Reserva(recursoOcupado, socio, fechaHoraInicio, fechaHoraFin);
+
+        reservaService.reservar(recurso, socio, fechaHoraInicio, fechaHoraFin);
     }
 
     @AfterClass
@@ -44,9 +45,20 @@ public class ReservaTest {
     @Test
     @DisplayName("Test reservar recurso ocupado")
     public void TestReservarRecursoOcupado(){
-        fechaHoraInicio = LocalDateTime.of(2025, 5, 19, 20, 30);
-        Reserva reservaNueva = new Reserva(recursoOcupado, socio, fechaHoraInicio, fechaHoraFin);
 
-        Assert.assertFalse("Los recursos se superponen", reserva.seSuperpone(reservaNueva.getInicio(), reservaNueva.getFin()));
+        fechaHoraInicio = LocalDateTime.of(2025, 5, 19, 19, 30);
+        boolean puedoReservar = reservaService.reservar(recurso, socio, fechaHoraInicio, fechaHoraFin);
+
+        Assert.assertTrue("No se puede reservar porque los recursos se superponen", puedoReservar);
+    }
+
+    @Test
+    @DisplayName("Test eliminar una reserva por otro usuario")
+    public void eliminarReservaPorOtroSocio() throws EdadInvalidaException, NombreMuyLargoException, DniInvalidoException {
+        Socio socioBorrar = new Socio("Pedro", 28, "Calle 25", "125589");
+        boolean puedoCancelar = reservaService.cancelarReserva(recurso, socioBorrar, fechaHoraInicio, fechaHoraFin);
+
+        Assert.assertTrue("No se puede eliminar la reserva de otro socio", puedoCancelar);
+
     }
 }

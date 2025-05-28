@@ -1,4 +1,4 @@
-package tdv.teclasunidos.test;
+package tdv.teclasunidos.test.Junit;
 
 import org.junit.runner.JUnitCore;
 

@@ -3,6 +3,7 @@ package tdv.teclasunidos;
 import java.util.Scanner;
 
 import tdv.teclasunidos.entities.Actividad;
+import tdv.teclasunidos.entities.NombreRecursoNoPermitido;
 import tdv.teclasunidos.entities.Recurso;
 import tdv.teclasunidos.entities.Socio;
 import tdv.teclasunidos.repositories.*;
@@ -121,7 +122,12 @@ private static void altaRecurso(Scanner scanner) {
     System.out.print("Ubicación: ");
     String ubicacion = scanner.nextLine();
 
-    Recurso recurso = new Recurso(nombre, ubicacion);
+    Recurso recurso = null;
+    try {
+        recurso = new Recurso(nombre, ubicacion);
+    } catch (NombreRecursoNoPermitido e) {
+        throw new RuntimeException(e);
+    }
     recursoRepo.agregar(recurso);
     System.out.println("Recurso agregado.");
 }

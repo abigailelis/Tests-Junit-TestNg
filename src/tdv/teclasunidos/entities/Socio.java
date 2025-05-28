@@ -6,33 +6,56 @@ public class Socio {
     private String direccion;
     private String dni;
 
-    public Socio(String nombre, int edad, String direccion, String dni) throws NombreMuyLargoException, EdadInvalidaException {
-    	if (nombre.length()>51) 
+    public Socio(String nombre, int edad, String direccion, String dni) throws NombreMuyLargoException, EdadInvalidaException, DniInvalidoException {
+
+		if (nombre.length()>50)
     		throw new NombreMuyLargoException();
         this.nombre = nombre;
+
         if (edad <0 ||edad >100) 
         	throw new EdadInvalidaException();
         this.edad = edad;
+
+		//Crear la exception
+		if(dni.contains(".") || dni.length() < 6 || dni.length() > 7)
+			throw new DniInvalidoException("El dni no puede contener puntos y debe tener entre 6 y 7 números");
+		this.dni = dni;
+
         this.direccion = direccion;
         
-        this.dni = dni;
+
     }
 
 	public int getEdad() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.edad;
 	}
 
 	public String getDni() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dni;
 	}
 
 	public String getNombre() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.nombre;
 	}
 
-    // Getters y setters
+	public String getDireccion(){
+		return this.direccion;
+	}
+
+	public void setNombre(String nombre) throws NombreMuyLargoException {
+		if (nombre.length()>50)
+			throw new NombreMuyLargoException();
+		this.nombre = nombre;
+	}
+
+	@Override
+	public String toString(){
+		return "Nombre: " + nombre + ", " +
+				" Edad: " + edad + ", " +
+				" Dirección: " + direccion + ", " +
+				" DNI: " + dni + "; ";
+	}
+
+    // setters
 }
 
